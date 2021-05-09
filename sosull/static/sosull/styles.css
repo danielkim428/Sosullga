@@ -1,11 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap');
-html, body {
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
 .light {
     background-color: #EEEEEE;
     font-family: 'Noto Sans KR', sans-serif;
