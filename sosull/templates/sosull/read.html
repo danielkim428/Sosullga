@@ -149,7 +149,7 @@ $(document).ready(function(){
     });
 
     $(window).scroll(function() {
-        $('#test').html($(window).height() + " " + $(document).height())
+        $('#test').html($(window).height() + " " + $(document).height());
         if($(window).scrollTop() == $(document).height() - $(window).height()) {
             fetch("next", {
             headers:{
