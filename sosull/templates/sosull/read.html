@@ -213,7 +213,7 @@ function save(){
 }
 
 function onScroll() {
-    $('#test').html($(window).scrollTop() + " " + $(window).height() + " " + $(document).height());
+    $('#test').html($(window).scrollTop() + " " + $(window).height() + " " + window.innerHeight + " " + $(document).height());
     if($(window).scrollTop() >= $(document).height() - $(window).height()) {
         fetch("next", {
         headers:{
