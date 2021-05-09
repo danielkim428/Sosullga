@@ -64,6 +64,9 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+    $(document.body).on('touchmove', onScroll);
+    $(window).on('scroll', onScroll);
+
     if("{{ setting.dark }}" == "True") {
         darkmode();
     }
@@ -147,32 +150,6 @@ $(document).ready(function(){
             console.log(data['result']);
         })
     });
-
-    $(window).scroll(function() {
-        $('#test').html($(window).scrollTop() + " " + $(window).height() + " " + $(document).height());
-        if($(window).scrollTop() >= $(document).height() - $(window).height()) {
-            fetch("next", {
-            headers:{
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest',
-              'page': $("#content").attr("page"),
-              'id': {{ novel.pk }},
-            },
-            })
-            .then(response => {
-              return response.json();
-            })
-            .then(data => {
-                if (data['nextPage'] == "end") {
-                    $(window).unbind('scroll');
-                } else {
-                    $("#content").append("<span id='page"+data['current']+"'>"+data['nextPage']+"</span>");
-                    $("#content").attr("page", data['current']);
-                    $(".pageNum").html(data['current']+"/"+data['total']);
-                }
-            })
-        }
-    });
 });
 
 function reset(){
@@ -233,6 +210,32 @@ function save(){
     .then(data => {
         console.log(data['result']);
     })
+}
+
+function onScroll() {
+    $('#test').html($(window).scrollTop() + " " + $(window).height() + " " + $(document).height());
+    if($(window).scrollTop() >= $(document).height() - $(window).height()) {
+        fetch("next", {
+        headers:{
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'page': $("#content").attr("page"),
+          'id': {{ novel.pk }},
+        },
+        })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+            if (data['nextPage'] == "end") {
+                $(window).unbind('scroll');
+            } else {
+                $("#content").append("<span id='page"+data['current']+"'>"+data['nextPage']+"</span>");
+                $("#content").attr("page", data['current']);
+                $(".pageNum").html(data['current']+"/"+data['total']);
+            }
+        })
+    }
 }
 
 function darkmode() {
