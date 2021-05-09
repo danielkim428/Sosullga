@@ -213,8 +213,7 @@ function save(){
 }
 
 function onScroll() {
-    $('#test').html(Math.ceil($(window).scrollTop()) + " " + $(window).height() + " " + window.innerHeight + " " + $(document).height());
-    if($(window).scrollTop() >= $(document).height() - window.innerHeight) {
+    if(Math.ceil($(window).scrollTop()) >= $(document).height() - window.innerHeight) {
         fetch("next", {
         headers:{
           'Accept': 'application/json',
