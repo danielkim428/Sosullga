@@ -1,0 +1,99 @@
+{% extends "sosull/base.html" %}
+{% load static %}
+
+{% block title %}
+{{ novel.title }}
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-white">
+    <a class="navbar-brand" href="{% url 'index' %}">sosullga</a>
+    <div class="dropdown ml-auto my-1 my-md-3 mr-n2">
+      <button class="btn account dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-lg"></i></button>
+      <div class="dropdown-menu dropdown-menu-right rounded-0" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="{% url 'account' %}">{{ request.user.username }}의 계정</a>
+        <a class="dropdown-item" href="{% url 'setting' %}">설정</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
+      </div>
+    </div>
+</nav>
+<nav class="navbar navbar-light bg-white pb-0">
+    <div class="container px-2">
+        <div class="row w-100 m-0" style="cursor: pointer;">
+            <div class="col-6 active-tab d-flex" onclick="location.href='{% url 'index' %}'">
+                <p class="mx-auto">웹소설</p>
+            </div>
+            <div class="col-6 d-flex" onclick="location.href='{% url 'request' %}'">
+                <p class="mx-auto">요청</p>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container py-3 px-2">
+    <div class="card rounded-0" style="width: 100%;">
+        <div class="card-body p-2 p-md-4">
+            <img class="cover float-left" src="{% with 'sosull/cover/'|add:novel.title|add:'.jpg' as image_static %}{% static image_static %}{% endwith %}" alt="{{ novel.title }}">
+            <div class="d-flex flex-column novel-card">
+                <p class="novel-title mb-0 mb-md-1">{{ novel.title }}</p>
+                <p class="mb-2">{{ novel.category }} | <i class="fas fa-star"></i> {{ novel.rating }}</p>
+                <div class="d-none d-md-flex">
+                    <button type="button" class="btn btn-outline-secondary rounded-0 mr-1" onclick="location.href='{% url 'read' novel.pk marker.page %}'">이어보기</button>
+                    <button type="button" class="btn btn-info rounded-0" onclick="location.href='{% url 'read' novel.pk 1 %}'">첫편보기</button>
+                </div>
+                <div class="d-flex d-md-none">
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-0 mr-1" onclick="location.href='{% url 'read' novel.pk marker.page %}'">이어보기</button>
+                    <button type="button" class="btn btn-sm btn-info rounded-0" onclick="location.href='{% url 'read' novel.pk 1 %}'">첫편보기</button>
+                </div>
+                <p class="my-2">페이지 {{ marker.page }} ({{ marker.percent }}%)</p>
+                <div class="w-100 mt-auto">
+                    <div class="progress" style="height: 5px;">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: {{ marker.percent }}%;" aria-valuenow="{{ marker.percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white border mt-2">
+        <div class="p-4 border-bottom">
+            <h5 class="mb-0">댓글 ({{ comment.count }})</h5>
+        </div>
+        <div class="p-4 border-bottom">
+            <form action="{% url 'series' novel.pk %}" method="post">
+                {% csrf_token %}
+                <div class="d-flex mb-2">
+                    <p class="mb-0 mr-1">평점:</p>
+                    <input type="number" name="rating" data-clearable="false" class="rating" required>
+                </div>
+                <div class="d-flex">
+                    <div class="form-group mb-0 w-100">
+                        <input type="text" class="form-control rounded-0" id="comment-input" name="content" placeholder="댓글쓰기" required>
+                    </div>
+                    <button type="submit" class="btn btn-outline-dark rounded-0" name="button" style="white-space:nowrap;">저장</button>
+                </div>
+            </form>
+        </div>
+        {% for c in comment %}
+        <div class="d-flex flex-column p-4 border-bottom">
+            {% if c.rating == 1 %}<p class="mb-2"><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></p>{% endif %}
+            {% if c.rating == 2 %}<p class="mb-2"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></p>{% endif %}
+            {% if c.rating == 3 %}<p class="mb-2"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></p>{% endif %}
+            {% if c.rating == 4 %}<p class="mb-2"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></p>{% endif %}
+            {% if c.rating == 5 %}<p class="mb-2"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></p>{% endif %}
+            <div class="d-flex">
+                <h5 class="mr-2 mb-2">{{ c.author }}</h5><p class="mb-2">{{ c.time.year }}.{{ c.time.month }}.{{ c.time.day }}</p>
+            </div>
+            <p class="mb-0">{{ c.content }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<nav class="navbar navbar-light mt-2">
+    <div class="container">
+        <p class="logo text-secondary">SOSULLGA</p>
+    </div>
+</nav>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "sosull/base.html" %}
+{% load static %}
+
+{% block title %}
+소설가 | 설정
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-white">
+    <a class="navbar-brand" href="{% url 'index' %}">sosullga</a>
+    <div class="dropdown ml-auto my-1 my-md-3 mr-n2">
+      <button class="btn account dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-lg"></i></button>
+      <div class="dropdown-menu dropdown-menu-right rounded-0" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="{% url 'account' %}">{{ request.user.username }}의 계정</a>
+        <a class="dropdown-item" href="{% url 'setting' %}">설정</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
+      </div>
+    </div>
+</nav>
+<nav class="navbar navbar-light bg-white pb-0">
+    <div class="container px-2">
+        <div class="row w-100 m-0" style="cursor: pointer;">
+            <div class="col-6 active-tab d-flex" onclick="location.href='{% url 'index' %}'">
+                <p class="mx-auto">웹소설</p>
+            </div>
+            <div class="col-6 d-flex" onclick="location.href='{% url 'request' %}'">
+                <p class="mx-auto">요청</p>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container py-3 px-2">
+    <div class="bg-white border mt-2">
+        <div class="p-4 border-bottom">
+            <h5 class="mb-0">설정</h5>
+        </div>
+        <div class="p-4 border-bottom">
+            <h6 class="mb-4">페이지 설정</h6>
+            <form class="px-3 border-left" action="{% url 'setting' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <div class="col-6 col-md-2">다크모드</div>
+                    <div class="col-6 col-md-10">
+                        <div class="form-check">
+                            <input type="hidden" name="dark" value="off">
+                            <input class="form-check-input" type="checkbox" name="dark" id="dark" {% if setting.dark is True %}checked{% endif %}>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="size" class="col-6 col-md-2 col-form-label">글자크기 (px)</label>
+                    <div class="col-6 col-md-10">
+                        <input type="number" class="form-control rounded-0" name="size" id="size" placeholder="기본값: 16" value="{{ setting.size }}" style="width: 120px;" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="height" class="col-6 col-md-2 col-form-label">줄간격 (px)</label>
+                    <div class="col-6 col-md-10">
+                        <input type="number" class="form-control rounded-0" name="height" id="height" placeholder="기본값: 24" value="{{ setting.height }}" style="width: 120px;" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="width" class="col-6 col-md-2 col-form-label">여백넓이 (px)</label>
+                    <div class="col-6 col-md-10">
+                        <input type="number" class="form-control rounded-0" name="width" id="width" placeholder="기본값: 48" value="{{ setting.width }}" style="width: 120px;" required>
+                    </div>
+                </div>
+                <div class="form-group row mt-4">
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-info rounded-0">저장</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-light mt-2">
+    <div class="container">
+        <p class="logo text-secondary">SOSULLGA</p>
+    </div>
+</nav>
+{% endblock %}

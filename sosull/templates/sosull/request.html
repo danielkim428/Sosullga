@@ -1,0 +1,97 @@
+{% extends "sosull/base.html" %}
+{% load static %}
+
+{% block title %}
+소설가 | 설정
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-white">
+    <a class="navbar-brand" href="{% url 'index' %}">sosullga</a>
+    <div class="dropdown ml-auto my-1 my-md-3 mr-n2">
+      <button class="btn account dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-lg"></i></button>
+      <div class="dropdown-menu dropdown-menu-right rounded-0" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="{% url 'account' %}">{{ request.user.username }}의 계정</a>
+        <a class="dropdown-item" href="{% url 'setting' %}">설정</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
+      </div>
+    </div>
+</nav>
+<nav class="navbar navbar-light bg-white pb-0">
+    <div class="container px-2">
+        <div class="row w-100 m-0" style="cursor: pointer;">
+            <div class="col-6 d-flex" onclick="location.href='{% url 'index' %}'">
+                <p class="mx-auto">웹소설</p>
+            </div>
+            <div class="col-6 active-tab d-flex" onclick="location.href='{% url 'request' %}'">
+                <p class="mx-auto">요청</p>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container py-3 px-2">
+    <div class="bg-white border mt-2">
+        <div class="p-4 border-bottom">
+            <h5 class="mb-0">요청</h5>
+        </div>
+        <div class="p-4 border-bottom">
+            <h6 class="mb-3">요청하기</h6>
+            <form class="px-3 border-left" action="{% url 'request' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label for="size" class="col-6 col-md-2 col-form-label">제목</label>
+                    <div class="col-6 col-md-10">
+                        <input type="text" class="form-control rounded-0" name="title" id="title" placeholder="Ex. 나 혼자만 레벨업" style="width: 120px;" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="height" class="col-6 col-md-2 col-form-label">작가</label>
+                    <div class="col-6 col-md-10">
+                        <input type="text" class="form-control rounded-0" name="author" id="author" placeholder="Ex. 추공" style="width: 120px;" required>
+                    </div>
+                </div>
+                <div class="form-group row mt-4">
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-info rounded-0">저장</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="p-4 border-bottom">
+            {% if quest %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="font-weight-light" scope="col">이름</th>
+                        <th class="font-weight-light" scope="col">제목</th>
+                        <th class="font-weight-light" scope="col">작가</th>
+                        <th class="font-weight-light" scope="col">해결</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    {% for q in quest %}
+                        <tr>
+                            <td>{{ q.user }}</td>
+                            <td>{{ q.title }}</td>
+                            <td>{{ q.author }}</td>
+                            <td>{% if q.solved == True %}<i class="fas fa-check-circle text-success"></i>{% else %}<i class="fas fa-times-circle text-danger"></i>{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="mb-0">아직 요청이 없습니다.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-light mt-2">
+    <div class="container">
+        <p class="logo text-secondary">SOSULLGA</p>
+    </div>
+</nav>
+{% endblock %}

@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap');
+.light {
+    background-color: #EEEEEE;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.active-tab {
+    border-bottom: solid #138496 3px;
+}
+.logo {
+    font-family: 'Monoton', cursive !important;
+}
+.navbar-brand {
+    font-family: 'Monoton', cursive !important;
+    font-size: 28px !important;
+    position: absolute;
+    left: 50%;
+    margin-left: -81px !important;
+    display: block;
+}
+.account {
+    color: #888;
+}
+.account:hover {
+    color: #AAA;
+}
+
+.cover {
+    width:200px;
+    height: 300px;
+    margin-right: 20px;
+}
+button {
+    focus: none !important;
+}
+.novel-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 30px;
+    font-weight: bold;
+}
+pre {
+    white-space: pre-wrap;
+    overflow: hidden;
+}
+#main {
+    padding: 0px 48px;
+}
+.novel {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    line-height: 1.5em;
+}
+.novel-card {
+    height: 295px !important;
+}
+.list-novel-title {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
+}
+.list-novel-cat {
+    font-size: 16px;
+}
+.list-cat {
+    color: #999;
+    font-size: 20px;
+    cursor: pointer;
+}
+.list-cat-active {
+    color: black !important;
+}
+.list-card {
+    cursor: pointer;
+}
+.pageNum {
+    font-size: 10px !important;
+}
+.goTo {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background-color: white;
+  width: 250px;
+  height: 100px;
+  border: solid #AAA 1px;
+  transform: translate(-50%, -50%);
+}
+.navPage {
+    position: fixed !important;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+.myNovel {
+    cursor: pointer;
+}
+.myNovel:hover {
+    background-color: #EEE;
+    transition: 0.2s;
+}
+.bookmark {
+    cursor: pointer;
+}
+.accountComment {
+    cursor: pointer;
+}
+.accountComment:hover {
+    background-color: #EEE;
+}
+.search {
+    border: 0;
+    border-bottom: solid #DDD 2px;
+}
+@media only screen and (max-width: 600px) {
+    .cover {
+        width:110px;
+        height: 165px;
+        margin-right: 10px;
+    }
+    .novel {
+        font-size: 16px;
+    }
+    .novel-title {
+        font-size: 20px;
+    }
+    .novel-card {
+        height: 160px !important;
+    }
+    .list-novel-title {
+        width: 100px;
+        font-size: 12px;
+    }
+    .list-novel-cat {
+        font-size: 12px;
+    }
+    .list-cat {
+        font-size: 13px;
+    }
+}
+
+.bgdark {
+    background-color: black !important;
+}
+.dark-mode {
+    color: #AAA !important;
+}

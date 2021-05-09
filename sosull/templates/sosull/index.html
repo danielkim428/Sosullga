@@ -1,0 +1,157 @@
+{% extends "sosull/base.html" %}
+{% load static %}
+
+{% block title %}
+소설가 | Home
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-white">
+    <a class="navbar-brand" href="{% url 'index' %}">sosullga</a>
+    <div class="dropdown ml-auto my-1 my-md-3 mr-n2">
+      <button class="btn account dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-lg"></i></button>
+      <div class="dropdown-menu dropdown-menu-right rounded-0" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="{% url 'account' %}">{{ request.user.username }}의 계정</a>
+        <a class="dropdown-item" href="{% url 'setting' %}">설정</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
+      </div>
+    </div>
+</nav>
+<nav class="navbar navbar-light bg-white pb-0">
+    <div class="container px-2">
+        <div class="row w-100 m-0" style="cursor: pointer;">
+            <div class="col-6 active-tab d-flex" onclick="location.href='{% url 'index' %}'">
+                <p class="mx-auto">웹소설</p>
+            </div>
+            <div class="col-6 d-flex" onclick="location.href='{% url 'request' %}'">
+                <p class="mx-auto">요청</p>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container py-2 px-2">
+    <div class="card rounded-0" style="width: 100%;">
+        <div class="card-header">
+            최근에 본 소설
+        </div>
+        <div class="card-body p-2 p-md-4">
+            <img class="cover float-left" src="{% with 'sosull/cover/'|add:recentNovel.title|add:'.jpg' as image_static %}{% static image_static %}{% endwith %}" alt="{{ recentNovel.title }}">
+            <div class="d-flex flex-column novel-card">
+                <p class="novel-title mb-0 mb-md-1" onclick="location.href='{% url 'series' recentNovel.pk %}'" style="cursor: pointer;">{{ recentNovel.title }}</p>
+                <p class="mb-2">무협 | <i class="fas fa-star"></i> {{ recentNovel.rating }}</p>
+                <div class="d-none d-md-flex">
+                    <button type="button" class="btn btn-outline-secondary rounded-0 mr-1" onclick="location.href='{% url 'read' recentNovel.pk recent.page %}'">이어보기</button>
+                    <button type="button" class="btn btn-info rounded-0" onclick="location.href='{% url 'read' recentNovel.pk 1 %}'">첫편보기</button>
+                </div>
+                <div class="d-flex d-md-none">
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-0 mr-1" onclick="location.href='{% url 'read' recentNovel.pk recent.page %}'">이어보기</button>
+                    <button type="button" class="btn btn-sm btn-info rounded-0" onclick="location.href='{% url 'read' recentNovel.pk 1 %}'">첫편보기</button>
+                </div>
+                <p class="my-2">페이지 {{ recent.page }} ({{ recent.percent }}%)</p>
+                <div class="w-100 mt-auto">
+                    <div class="progress" style="height: 5px;">
+                          <div class="progress-bar bg-info" role="progressbar" style="width: {{ recent.percent }}%;" aria-valuenow="{{ recent.percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white border mt-2 py-3 px-2">
+        <form class="p-4 d-flex w-100" action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+            <input type="text" class="mb-0 search w-100" name="search" id="search" placeholder="검색하기" required>
+            <button type="submit" class="btn btn-outline-info rounded-0 mb-0 ml-3"><i class="fas fa-search"></i></button>
+        </form>
+        {% if resultNone %}
+        <div class="p-4">
+            <h5 class="mb-3">결과</h5>
+            <p class="mb-0">{{ resultNone }}</p>
+        </div>
+        {% endif %}
+        {% if result %}
+        <div class="p-4">
+            <h5 class="mb-3">결과</h5>
+            <table class="table table-hover">
+                <tbody>
+                    {% for r in result %}
+                        <tr style="cursor: pointer;" onclick="location.href='{% url 'series' r.pk %}'">
+                            <td>{{ r.title }}</td>
+                            <td>{{ r.category }}</td>
+                            <td><i class="fas fa-star"></i> {{ r.rating }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="bg-white border mt-2 py-2 px-4">
+        <div class="row pt-3">
+            <div class="col-2 d-flex p-0">
+                <p class="mx-auto list-cat list-cat-active">전체</p>
+            </div>
+            <div class="col-2 d-flex p-0">
+                <p class="mx-auto list-cat">판타지</p>
+            </div>
+            <div class="col-2 d-flex p-0">
+                <p class="mx-auto list-cat">현판</p>
+            </div>
+            <div class="col-2 d-flex p-0">
+                <p class="mx-auto list-cat">로맨스</p>
+            </div>
+            <div class="col-2 d-flex p-0">
+                <p class="mx-auto list-cat">로판</p>
+            </div>
+            <div class="col-2 d-flex p-0">
+                <p class="mx-auto list-cat">무협</p>
+            </div>
+        </div>
+        <div class="row pt-2">
+            {% for novel in novels %}
+            <div class="col-6 col-md-3 p-2 p-md-3 mb-1 list-novel list-novel-{{ novel.category }}">
+                <div class="card border-0 mx-auto list-card" onclick="location.href='{% url 'series' novel.pk %}'">
+                    <img src="{% with 'sosull/cover/'|add:novel.title|add:'.jpg' as image_static %}{% static image_static %}{% endwith %}" alt="{{ novel.title }}">
+                    <div class="card-body px-2 px-md-3 bg-dark text-white py-2 d-flex justify-content-between">
+                        <p class="mb-0 list-novel-title">{{ novel.title }}</p>
+                        <p class="mb-0 list-novel-cat text-secondary">{{ novel.category }}</p>
+                    </div>
+                    <div class="card-footer p-0">
+                        <div class="progress" style="height: 5px;">
+                            {% for marker in novel.marker_set.all %}
+                                {% if marker.user == request.user %}
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ marker.percent }}%;" aria-valuenow="{{ marker.percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                {% else %}
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-light mt-2">
+    <div class="container">
+        <p class="logo text-secondary">SOSULLGA</p>
+    </div>
+</nav>
+
+<script type="text/javascript">
+$(document).on('click', '.list-cat', function(e){
+    var $type = $(this).html();
+    console.log($type);
+    if($type == "전체"){
+        $('.list-novel').show();
+    } else {
+        $('.list-novel').hide();
+        $('.list-novel-'+$type).show();
+    }
+})
+</script>
+{% endblock %}

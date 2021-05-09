@@ -1,0 +1,256 @@
+{% extends "sosull/base.html" %}
+{% load static %}
+
+{% block title %}
+{{ novel.title }} | {{ page }}
+{% endblock %}
+
+{% block body %}
+<nav class="navbar fixed-top px-1" id="navigation" style="pointer-events: none;">
+    <div class="d-flex w-100 flex-column">
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'series' novel.pk %}" class="btn" id="back" style="pointer-events: auto;"><i class="fas fa-arrow-left"></i> &nbsp;{{ novel.title }}</a>
+            <a tabindex="0" class="btn" id="bookmark" style="cursor: pointer; pointer-events: auto;" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-content="북마크가 되었습니다."><i class="fas fa-bookmark"></i></a>
+        </div>
+        <div class="d-flex justify-content-end">
+            <a class="btn mt-n2" onclick="darkmode()" id="darkModeToggle" style="cursor: pointer; margin-right: -2px; pointer-events: auto;" darkMode="False"><i class="fas fa-moon"></i></a>
+        </div>
+        <div class="d-flex flex-column ml-auto">
+            <a class="btn mt-n2" id="settingToggle" style="cursor: pointer; margin-right: -2px; pointer-events: auto;"><i class="fas fa-cog"></i></a>
+            <div class="pageSetting" style="display: none;">
+                <div class="d-flex flex-column bg-white shadow" style="pointer-events: auto;">
+                    <a class="btn" id="fontUp" style="cursor: pointer;" onclick="changeFontSize(1)"><i class="fas fa-font"></i></a>
+                    <a class="btn mt-n2" id="fontDown" style="cursor: pointer;" onclick="changeFontSize(-1)"><i class="fas fa-font fa-xs"></i></a>
+                    <a class="btn mt-n2" id="lineUp" style="cursor: pointer;" onclick="changeLineHeight(2)"><i class="fas fa-arrows-alt-v"></i></a>
+                    <a class="btn mt-n2" id="lineDown" style="cursor: pointer;" onclick="changeLineHeight(-2)"><i class="fas fa-arrows-alt-v fa-xs"></i></a>
+                    <a class="btn mt-n2" id="marginUp" style="cursor: pointer;" onclick="changeMargin(-5)"><i class="fas fa-arrows-alt-h"></i></a>
+                    <a class="btn mt-n2" id="marginDown" style="cursor: pointer;" onclick="changeMargin(5)"><i class="fas fa-arrows-alt-h fa-xs"></i></a>
+                    <a class="btn mt-n2" id="reset" style="cursor: pointer;" onclick="reset()"><i class="fas fa-undo"></i></a>
+                    <a tabindex="0" class="btn mt-n2" onclick="save()" id="save" style="cursor: pointer;" role="button" data-toggle="popover" data-trigger="focus" data-placement="left" data-content="설정이 저장되었습니다."><i class="fas fa-save"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="navPage w-100 px-1" style="pointer-events: none;">
+    <div class="d-flex justify-content-between">
+        <a class="btn" id="backPage" style="cursor: pointer; pointer-events: auto;"><i class="fas fa-caret-left"></i></a>
+        <a class="btn" id="nextPage" style="cursor: pointer; pointer-events: auto;"><i class="fas fa-caret-right"></i></a>
+    </div>
+</div>
+
+<nav class="navbar fixed-bottom px-1" id="bottomNav" style="pointer-events: none;">
+    <div class="d-flex justify-content-between w-100">
+        <p class="mb-0 pageNum mt-4" style="cursor: pointer; pointer-events: auto;" id="pageNum">{{ page }}/{{ total }}</p>
+    </div>
+</nav>
+
+<div class="goTo shadow" style="display: none;">
+    <form class="d-flex flex-column" id="goToPage">
+        <p class="mb-1 ml-auto mr-2 mt-1" style="cursor: pointer;" id="close"><i class="fas fa-times"></i></p>
+        <div class="d-flex px-3">
+            <div class="form-group mb-0 w-100">
+                <input type="text" class="form-control rounded-0" id="page-input" placeholder="페이지">
+            </div>
+            <button type="submit" class="btn btn-outline-dark rounded-0" style="white-space:nowrap;">GO</button>
+        </div>
+    </form>
+</div>
+
+<div class="container my-5" id="main">
+<h5><pre><span class="novel" id="content" page="{{ page }}"><span id="page{{ page }}">{{ content }}</span></span></pre></h5>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    if("{{ setting.dark }}" == "True") {
+        darkmode();
+    }
+    document.getElementById("content").style.fontSize = '{{ setting.size }}px';
+    document.getElementById("content").style.lineHeight = '{{ setting.height }}px';
+    document.getElementById("main").style.padding = '0px {{ setting.width }}px';
+
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    })
+    $('.popover-dismiss').popover({
+        trigger: 'focus'
+    })
+    $("#main").click(function(){
+        $("#navigation").toggle();
+        $("#bottomNav").toggle();
+        $(".navPage").toggle();
+    });
+    $("#pageNum").click(function(){
+        $(".goTo").toggle();
+    });
+    $("#close").click(function(){
+        $(".goTo").hide();
+    });
+    $("#settingToggle").click(function(){
+        $(".pageSetting").toggle();
+    });
+
+    var url = window.location.pathname;
+    var thisPage = url.split("/")[3];
+    var globalPage = thisPage;
+    var tempPage = thisPage;
+
+    window.onscroll = (()=> {
+      let sections = document.querySelectorAll('#content span');
+
+      sections.forEach((v,i)=> {
+        let rect = v.getBoundingClientRect().y
+        if(rect < window.innerHeight){
+            globalPage = +thisPage + +i
+            $(".pageNum").html(globalPage+"/{{ total }}");
+        }
+      })
+
+      if (tempPage != globalPage) {
+          window.history.pushState("", "", globalPage);
+          tempPage = globalPage;
+      }
+    })
+
+
+    $("#backPage").click(function(){
+        window.location.href = +globalPage-1;
+    });
+    $("#nextPage").click(function(){
+        window.location.href = +globalPage+1;
+    });
+
+    $("#goToPage").submit(function(e) {
+        e.preventDefault();
+        if ($('#page-input').val() == "") {
+            $(".goTo").hide();
+        } else {
+            window.location.href = $('#page-input').val()
+        }
+    });
+
+    $("#bookmark").click(function(){
+        fetch("bookmark", {
+        headers:{
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'page': globalPage,
+          'id': {{ novel.pk }},
+        },
+        })
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+            console.log(data['result']);
+        })
+    });
+
+    $(window).scroll(function() {
+        if($(window).scrollTop() == $(document).height() - $(window).height()) {
+            fetch("next", {
+            headers:{
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'page': $("#content").attr("page"),
+              'id': {{ novel.pk }},
+            },
+            })
+            .then(response => {
+              return response.json();
+            })
+            .then(data => {
+                if (data['nextPage'] == "end") {
+                    $(window).unbind('scroll');
+                } else {
+                    $("#content").append("<span id='page"+data['current']+"'>"+data['nextPage']+"</span>");
+                    $("#content").attr("page", data['current']);
+                    $(".pageNum").html(data['current']+"/"+data['total']);
+                }
+            })
+        }
+    });
+});
+
+function reset(){
+    if ($("#darkModeToggle").attr("darkMode") == "True") {
+       darkmode();
+    }
+    document.getElementById("content").style.fontSize = '16px';
+    document.getElementById("content").style.lineHeight = '24px';
+    document.getElementById("main").style.padding = '0px 48px';
+}
+
+function changeFontSize(increaseFactor){
+     txt = document.getElementById("content");
+     style = window.getComputedStyle(txt, null).getPropertyValue('font-size');
+     currentSize = parseFloat(style);
+     txt.style.fontSize = (currentSize + increaseFactor) + 'px';
+}
+
+function changeLineHeight(increaseFactor){
+     txt = document.getElementById("content");
+     style = window.getComputedStyle(txt, null).getPropertyValue('line-height');
+     currentSize = parseFloat(style);
+     txt.style.lineHeight = (currentSize + increaseFactor) + 'px';
+}
+
+function changeMargin(increaseFactor){
+     txt = document.getElementById("main");
+     style = window.getComputedStyle(txt, null).getPropertyValue('padding-right');
+     currentSize = parseFloat(style);
+     txt.style.padding = '0px '+ (currentSize + increaseFactor) + 'px';
+}
+
+function save(){
+    txt = document.getElementById("content");
+    dark = $("#darkModeToggle").attr("darkMode");
+    size = window.getComputedStyle(txt, null).getPropertyValue('font-size');
+    height = window.getComputedStyle(txt, null).getPropertyValue('line-height');
+    padding = document.getElementById("main");
+    width = window.getComputedStyle(padding, null).getPropertyValue('padding-right');
+
+    var size = parseFloat(size);
+    var height = parseFloat(height);
+    var width = parseFloat(width);
+
+    fetch("/pageSetting", {
+    headers:{
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'dark': dark,
+      'size': size,
+      'height': height,
+      'width': width
+    },
+    })
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+        console.log(data['result']);
+    })
+}
+
+function darkmode() {
+   if ($("#darkModeToggle").attr("darkMode") == "False") {
+       $("#darkModeToggle").attr("darkMode", "True");
+   } else {
+       $("#darkModeToggle").attr("darkMode", "False");
+   }
+   var body = document.body;
+   body.classList.toggle("light");
+   body.classList.toggle("bgdark");
+   document.getElementById("back").classList.toggle("dark-mode");
+   document.getElementById("darkModeToggle").classList.toggle("dark-mode");
+   document.getElementById("content").classList.toggle("dark-mode");
+   document.getElementById("pageNum").classList.toggle("dark-mode");
+   document.getElementById("backPage").classList.toggle("dark-mode");
+   document.getElementById("nextPage").classList.toggle("dark-mode");
+   document.getElementById("bookmark").classList.toggle("dark-mode");
+   document.getElementById("settingToggle").classList.toggle("dark-mode");
+}
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "sosull/base.html" %}
+{% load static %}
+
+{% block title %}
+소설가 | 로그인
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-white">
+    <a class="navbar-brand" href="{% url 'index' %}">sosullga</a>
+    <a class="account ml-auto my-3 my-md-4 mr-2 mr-md-4" href="{% url 'login' %}">로그인</a>
+</nav>
+<nav class="navbar navbar-light bg-white pb-0">
+    <div class="container px-2">
+        <div class="row w-100 m-0" style="cursor: pointer;">
+            <div class="col-6 active-tab d-flex" onclick="location.href='{% url 'login' %}'">
+                <p class="mx-auto">로그인</p>
+            </div>
+            <div class="col-6 d-flex" onclick="location.href='{% url 'register' %}'">
+                <p class="mx-auto">회원가입</p>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container py-3 px-3">
+    <div class="row">
+        <div class="col-11 col-md-5 mx-auto bg-white px-4 px-md-5 py-5 text-center">
+            <h1 class="logo">sosullga</h1>
+            {% if message %}
+            <p class="mt-3 text-danger">{{ message }}</p>
+            {% endif %}
+            <form action="{% url 'login' %}" class="mt-4 mb-3" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="username" class="form-control rounded-0" id="username"
+                        placeholder="아이디" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" id="password" class="form-control rounded-0"
+                        placeholder="비밀번호" required>
+                </div>
+                <button type="submit" value="Login" class="mt-3 btn btn-info rounded-0 btn-block btn-lg">로그인</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

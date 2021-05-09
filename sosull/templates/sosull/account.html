@@ -1,0 +1,124 @@
+{% extends "sosull/base.html" %}
+{% load static %}
+
+{% block title %}
+소설가 | 설정
+{% endblock %}
+
+{% block body %}
+<nav class="navbar navbar-light bg-white">
+    <a class="navbar-brand" href="{% url 'index' %}">sosullga</a>
+    <div class="dropdown ml-auto my-1 my-md-3 mr-n2">
+      <button class="btn account dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-lg"></i></button>
+      <div class="dropdown-menu dropdown-menu-right rounded-0" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="{% url 'account' %}">{{ request.user.username }}의 계정</a>
+        <a class="dropdown-item" href="{% url 'setting' %}">설정</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'logout' %}">로그아웃</a>
+      </div>
+    </div>
+</nav>
+<nav class="navbar navbar-light bg-white pb-0">
+    <div class="container px-2">
+        <div class="row w-100 m-0" style="cursor: pointer;">
+            <div class="col-6 active-tab d-flex" onclick="location.href='{% url 'index' %}'">
+                <p class="mx-auto">웹소설</p>
+            </div>
+            <div class="col-6 d-flex" onclick="location.href='{% url 'request' %}'">
+                <p class="mx-auto">요청</p>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container py-3 px-2">
+    <div class="bg-white border mt-2">
+        <div class="p-4 border-bottom">
+            <h5 class="mb-0">{{ request.user }}의 계정</h5>
+        </div>
+        <div class="p-4 border-bottom">
+            <h6 class="mb-3">내 작품 (최근 본 순)</h6>
+            <div class="row">
+                {% for novel in history %}
+                    <div class="col-12 col-md-6 px-2 px-md-4 myNovel" onclick="location.href='{% url 'read' novel.novel.pk novel.page %}'">
+                        <div class="d-flex border-top border-bottom py-3">
+                            <img class="cover" src="{% with 'sosull/cover/'|add:novel.novel.title|add:'.jpg' as image_static %}{% static image_static %}{% endwith %}" alt="{{ novel.novel }}">
+                            <div class="d-flex flex-column">
+                                <h5 class="novel-title mb-1">{{ novel.novel }}</h5>
+                                <p class="mb-0 text-secondary font-weight-light">{{ novel.page }} 페이지 ({{ novel.percent }}%)</p>
+                                <p class="mb-0 text-secondary"><small>{{ novel.time }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="p-4 border-bottom">
+            <h6 class="mb-3">북마크</h6>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th class="d-none d-md-block" scope="col">시간</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">페이지</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for novel in bookmark %}
+                        <tr class="bookmark" onclick="location.href='{% url 'read' novel.novel.pk novel.page %}'">
+                            <td class="d-none d-md-block">{{ novel.time.month }}/{{ novel.time.day }}/{{ novel.time.year }}</td>
+                            <td>{{ novel.novel }}</td>
+                            <td>{{ novel.page }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="p-4 border-bottom">
+            <h6 class="mb-3">내가 남긴 댓글</h6>
+            {% for c in comment %}
+                <div class="d-flex flex-column border-top py-2 px-2 accountComment" onclick="location.href='{% url 'series' c.novel.pk %}'">
+                    <p class="mb-1"><small>{{ c.time.month }}/{{ c.time.day }}/{{ c.time.year }}</small></p>
+                    <h6 class="mb-1">{{ c.novel }} | <i class="fas fa-star"></i> {% if c.rating %}{{ c.rating }}{% else %}-{% endif %}</h6>
+
+                    <p class="mb-0">{{ c.content }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="p-4 border-bottom">
+            <h6 class="mb-3">요청</h6>
+            {% if quest %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="font-weight-light" scope="col">이름</th>
+                        <th class="font-weight-light" scope="col">제목</th>
+                        <th class="font-weight-light" scope="col">작가</th>
+                        <th class="font-weight-light" scope="col">해결</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    {% for q in quest %}
+                        <tr>
+                            <td>{{ q.user }}</td>
+                            <td>{{ q.title }}</td>
+                            <td>{{ q.author }}</td>
+                            <td>{% if q.solved == True %}<i class="fas fa-check-circle text-success"></i>{% else %}<i class="fas fa-times-circle text-danger"></i>{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="mb-0">아직 요청이 없습니다.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-light mt-2">
+    <div class="container">
+        <p class="logo text-secondary">SOSULLGA</p>
+    </div>
+</nav>
+{% endblock %}
