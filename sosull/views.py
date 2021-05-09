@@ -18,41 +18,76 @@ def index(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('login'))
 
-    recent = Marker.objects.filter(user=request.user).all().latest('time')
+    try:
+        recent = Marker.objects.filter(user=request.user).all().latest('time')
 
-    if request.method == 'POST':
-        query = request.POST['search']
+        if request.method == 'POST':
+            query = request.POST['search']
 
-        print(query)
+            print(query)
 
-        result = Novel.objects.filter(title__contains=query)
+            result = Novel.objects.filter(title__contains=query)
 
-        if result:
+            if result:
+                context = {
+                    "user": request.user,
+                    "novels": Novel.objects.all(),
+                    "recent": recent,
+                    "recentNovel": Novel.objects.get(title=recent.novel),
+                    "result": result,
+                }
+            else:
+                context = {
+                    "user": request.user,
+                    "novels": Novel.objects.all(),
+                    "recent": recent,
+                    "recentNovel": Novel.objects.get(title=recent.novel),
+                    "resultNone": "결과가 없습니다.",
+                }
+
+            return render(request, "sosull/index.html", context)
+        else :
             context = {
                 "user": request.user,
                 "novels": Novel.objects.all(),
                 "recent": recent,
                 "recentNovel": Novel.objects.get(title=recent.novel),
-                "result": result,
             }
-        else:
+            return render(request, "sosull/index.html", context)
+    except:
+        if request.method == 'POST':
+            query = request.POST['search']
+
+            print(query)
+
+            result = Novel.objects.filter(title__contains=query)
+
+            if result:
+                context = {
+                    "user": request.user,
+                    "novels": Novel.objects.all(),
+                    "recent": None,
+                    "recentNovel": None,
+                    "result": result,
+                }
+            else:
+                context = {
+                    "user": request.user,
+                    "novels": Novel.objects.all(),
+                    "recent": None,
+                    "recentNovel": None,
+                    "resultNone": "결과가 없습니다.",
+                }
+
+            return render(request, "sosull/index.html", context)
+        else :
             context = {
                 "user": request.user,
                 "novels": Novel.objects.all(),
-                "recent": recent,
-                "recentNovel": Novel.objects.get(title=recent.novel),
-                "resultNone": "결과가 없습니다.",
+                "recent": None,
+                "recentNovel": None,
             }
-
-        return render(request, "sosull/index.html", context)
-    else :
-        context = {
-            "user": request.user,
-            "novels": Novel.objects.all(),
-            "recent": recent,
-            "recentNovel": Novel.objects.get(title=recent.novel),
-        }
-        return render(request, "sosull/index.html", context)
+            return render(request, "sosull/index.html", context)
 
 def request(request):
     if not request.user.is_authenticated:

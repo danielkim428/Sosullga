@@ -31,6 +31,7 @@
     </div>
 </nav>
 <div class="container py-2 px-2">
+    {% if recent is not None %}
     <div class="card rounded-0" style="width: 100%;">
         <div class="card-header">
             최근에 본 소설
@@ -57,6 +58,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <div class="bg-white border mt-2 py-3 px-2">
         <form class="p-4 d-flex w-100" action="{% url 'index' %}" method="post">
