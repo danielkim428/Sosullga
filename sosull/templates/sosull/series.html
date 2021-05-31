@@ -22,7 +22,7 @@
     <div class="container px-2">
         <div class="row w-100 m-0" style="cursor: pointer;">
             <div class="col-6 active-tab d-flex" onclick="location.href='{% url 'index' %}'">
-                <p class="mx-auto">웹소설</p>
+                <p class="mx-auto">소설</p>
             </div>
             <div class="col-6 d-flex" onclick="location.href='{% url 'request' %}'">
                 <p class="mx-auto">요청</p>
@@ -58,7 +58,7 @@
     </div>
     <div class="bg-white border mt-2">
         <div class="p-4 border-bottom">
-            <h5 class="mb-0">댓글 ({{ comment.count }})</h5>
+            <h5 class="mb-0 comment-text">댓글 ({{ comment.count }})</h5>
         </div>
         <div class="p-4 border-bottom">
             <form action="{% url 'series' novel.pk %}" method="post">

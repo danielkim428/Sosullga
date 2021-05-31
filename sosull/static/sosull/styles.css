@@ -54,6 +54,10 @@ pre {
 .novel-card {
     height: 295px !important;
 }
+.comment-text {
+    font-size: 18px;
+}
+
 .list-novel-title {
     width: 150px;
     white-space: nowrap;
@@ -62,6 +66,9 @@ pre {
     font-size: 16px;
 }
 .list-novel-cat {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 16px;
 }
 .list-cat {
@@ -138,6 +145,10 @@ pre {
     .list-cat {
         font-size: 13px;
     }
+    .comment-text {
+        font-size: 15px;
+    }
+
 }
 
 .bgdark {

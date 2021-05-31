@@ -421,6 +421,8 @@ def register(request):
         try:
             new_user = User.objects.create_user(username, email, password)
             new_user.save()
+            new_reader = Reader.objects.create_user(new_user)
+            new_reader.save()
 
         except IntegrityError:
             return render(request, 'sosull/register.html', {"message": "이미 사용중인 아이디이거나 이미 가입되어 있습니다."})

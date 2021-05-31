@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 # Create your models here.
 class Novel(models.Model):
     title = models.CharField(max_length=100)
-    category = models.CharField(max_length=10, null=True, blank=True)
+    category = models.CharField(max_length=30, null=True, blank=True)
     file = models.FileField(upload_to='novel/', null=True, blank=True)
     rating = models.CharField(max_length=4, null=True, blank=True)
 
