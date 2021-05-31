@@ -414,11 +414,6 @@ def register(request):
         return HttpResponseRedirect(reverse('index'))
 
     if request.method == 'POST':
-        code = request.POST['code']
-
-        if code != "woodstock":
-            return render(request, 'sosull/register.html', {"message": "잘못된 코드입니다."})
-
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
