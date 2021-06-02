@@ -421,7 +421,7 @@ def register(request):
         try:
             new_user = User.objects.create_user(username, email, password)
             new_user.save()
-            new_reader = Reader.objects.create_user(new_user)
+            new_reader = Reader(user=new_user)
             new_reader.save()
 
         except IntegrityError:
